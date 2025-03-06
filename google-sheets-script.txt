@@ -1,0 +1,71 @@
+// Copy this code to Google Apps Script
+function doPost(e) {
+  const spreadsheetId = '1KHgxU2ziVRh3bAz120se4fnTcorgY1r1ax413XdU6sY';
+  const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Sheet1'); // Specify sheet name
+  
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const formData = data.data;
+    
+    // Format the data into an array matching your columns
+    const rowData = [
+      new Date(), // Timestamp
+      formData.name,
+      formData.gender,
+      formData.birthName,
+      formData.birthDate,
+      formData.birthTime,
+      formData.place,
+      formData.raashi,
+      formData.nakshatra,
+      formData.caste,
+      formData.subcaste,
+      formData.peeta,
+      formData.homegod,
+      formData.height,
+      formData.education,
+      formData.occupation,
+      formData.maritalStatus,
+      formData.annualIncome,
+      formData.otherDetails,
+      formData.partnerPreference,
+      formData.father,
+      formData.fathersOccupation,
+      formData.mother,
+      formData.mothersOccupation,
+      formData.sisters,
+      formData.brothers,
+      formData.contact,
+      formData.email,
+      formData.address,
+      formData.image1,
+      formData.image2
+    ];
+    
+    // Append the data to the sheet
+    sheet.appendRow(rowData);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      'result': 'success',
+      'message': 'Data saved successfully'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      'result': 'error',
+      'message': error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("Service is running");
+}
+
+// Add this function to set up CORS
+function setCorsHeaders(response) {
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  return response;
+}
