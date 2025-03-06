@@ -68,10 +68,10 @@ export function PreviewModal({ formData, onConfirm, onCancel, showSuccessMessage
         </div>
 
         <div className="flex justify-end gap-4 mt-6">
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} className="bg-yellow-500 text-white">
             ಮರಳಿ ಸರಿಪಡಿಸಿ (Edit)
           </Button>
-          <Button onClick={onConfirm}>
+          <Button onClick={onConfirm} className="bg-blue-500 text-white">
             ದೃಢೀಕರಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ (Confirm & Submit)
           </Button>
         </div>
