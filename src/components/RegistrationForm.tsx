@@ -359,7 +359,7 @@ export const RegistrationForm = () => {
             englishLabel="Marital Status"
             type="select"
             options={[
-              { value: 'never_married', label: 'ಅವಿವಾಹಿತ (Never Married)' },
+              { value: 'never_married', label: 'ಅವಿವಾಹಿತ (Single/Unmarried)' },
               { value: 'divorced', label: 'ವಿಚ್ಛೇದಿತ (Divorced)' },
               { value: 'widowed', label: 'ವಿಧವೆ/ವಿಧುರ (Widowed)' }
             ]}
