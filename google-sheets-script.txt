@@ -11,7 +11,6 @@ function doPost(e) {
     const rowData = [
       new Date(), // Timestamp
       formData.name,
-      formData.gender,
       formData.birthName,
       formData.birthDate,
       formData.birthTime,
@@ -29,6 +28,7 @@ function doPost(e) {
       formData.annualIncome,
       formData.otherDetails,
       formData.partnerPreference,
+      formData.gender,
       formData.father,
       formData.fathersOccupation,
       formData.mother,
