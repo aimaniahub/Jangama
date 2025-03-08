@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { FormField } from "./FormField";
 import { Loader2 } from "lucide-react";
 import { SuccessMessage } from "./SuccessMessage";
-import { z } from "zod";
 import { PreviewModal } from "./PreviewModal";
+
+interface TimeState {
+  hour: string;
+  minute: string;
+  period: string;
+}
 
 export const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +47,12 @@ export const RegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+
+  const [birthTimeState, setBirthTimeState] = useState<TimeState>({
+    hour: "12",
+    minute: "00",
+    period: "AM"
+  });
 
   const raashiOptions = [
     { value: 'mesha', label: 'ಮೇಷ (Aries)' },
@@ -95,6 +106,28 @@ export const RegistrationForm = () => {
     "6ft", "6.1ft", "6.2ft", "6.3ft", "6.4ft", "6.5ft", "6.6ft", "6.7ft", "6.8ft", "6.9ft",
     "7ft"
   ];
+
+  const generateHourOptions = () => {
+    return Array.from({ length: 12 }, (_, i) => {
+      const hour = (i + 1).toString();
+      return { value: hour, label: hour };
+    });
+  };
+
+  const generateMinuteOptions = () => {
+    return Array.from({ length: 60 }, (_, i) => {
+      const minute = i.toString().padStart(2, '0');
+      return { value: minute, label: minute };
+    });
+  };
+
+  const handleTimeChange = (type: keyof TimeState, value: string) => {
+    const newTimeState = { ...birthTimeState, [type]: value };
+    setBirthTimeState(newTimeState);
+    
+    const timeString = `${newTimeState.hour}:${newTimeState.minute} ${newTimeState.period}`;
+    updateField('birthTime', timeString);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,10 +203,6 @@ export const RegistrationForm = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleBirthTimeChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, birthTime: value }));
-  };
-
   if (showSuccess) {
     return <SuccessMessage />;
   }
@@ -226,41 +255,46 @@ export const RegistrationForm = () => {
             required
           />
 
-          <FormField
-            label="ಜನ್ಮ ಸಮಯ (Birth Time)"
-            type="select"
-            options={[
-              { value: '12:00 AM', label: '12:00 AM' },
-              { value: '1:00 AM', label: '1:00 AM' },
-              { value: '2:00 AM', label: '2:00 AM' },
-              { value: '3:00 AM', label: '3:00 AM' },
-              { value: '4:00 AM', label: '4:00 AM' },
-              { value: '5:00 AM', label: '5:00 AM' },
-              { value: '6:00 AM', label: '6:00 AM' },
-              { value: '7:00 AM', label: '7:00 AM' },
-              { value: '8:00 AM', label: '8:00 AM' },
-              { value: '9:00 AM', label: '9:00 AM' },
-              { value: '10:00 AM', label: '10:00 AM' },
-              { value: '11:00 AM', label: '11:00 AM' },
-              { value: '12:00 PM', label: '12:00 PM' },
-              { value: '1:00 PM', label: '1:00 PM' },
-              { value: '2:00 PM', label: '2:00 PM' },
-              { value: '3:00 PM', label: '3:00 PM' },
-              { value: '4:00 PM', label: '4:00 PM' },
-              { value: '5:00 PM', label: '5:00 PM' },
-              { value: '6:00 PM', label: '6:00 PM' },
-              { value: '7:00 PM', label: '7:00 PM' },
-              { value: '8:00 PM', label: '8:00 PM' },
-              { value: '9:00 PM', label: '9:00 PM' },
-              { value: '10:00 PM', label: '10:00 PM' },
-              { value: '11:00 PM', label: '11:00 PM' },
-            ]}
-            value={formData.birthTime}
-            onChange={handleBirthTimeChange}
-          />
+          <div className="space-y-4">
+            <label className="block text-sm font-medium text-gray-700">
+              ಜನ್ಮ ಸಮಯ (Birth Time)
+            </label>
+            <div className="flex gap-2">
+              <FormField
+                label=""
+                englishLabel="Hour"
+                type="select"
+                options={generateHourOptions()}
+                value={birthTimeState.hour}
+                onChange={(value) => handleTimeChange('hour', value)}
+                className="w-24"
+              />
+              <FormField
+                label=""
+                englishLabel="Minute"
+                type="select"
+                options={generateMinuteOptions()}
+                value={birthTimeState.minute}
+                onChange={(value) => handleTimeChange('minute', value)}
+                className="w-24"
+              />
+              <FormField
+                label=""
+                englishLabel="Period"
+                type="select"
+                options={[
+                  { value: 'AM', label: 'AM' },
+                  { value: 'PM', label: 'PM' }
+                ]}
+                value={birthTimeState.period}
+                onChange={(value) => handleTimeChange('period', value)}
+                className="w-24"
+              />
+            </div>
+          </div>
 
           <FormField
-            label="ಜನ್ಮ ಸ್ಥಳ"
+            label="ಜನ್ಮ ಸ್ಥಳ (Birth Place)"
             englishLabel="Birth Place"
             value={formData.place}
             onChange={(value) => updateField('place', value)}
@@ -283,6 +317,7 @@ export const RegistrationForm = () => {
 
           <FormField
             label="ನಕ್ಷತ್ರ (Nakshatra)"
+            englishLabel="Nakshatra"
             type="select"
             options={nakshatraOptions}
             value={formData.nakshatra}
@@ -304,21 +339,21 @@ export const RegistrationForm = () => {
           />
 
           <FormField
-            label="ಉಪಜಾತಿ"
+            label="ಉಪಜಾತಿ (Sub-caste)"
             englishLabel="Sub-caste"
             value={formData.subcaste}
             onChange={(value) => updateField('subcaste', value)}
           />
 
           <FormField
-            label="ಪೀಠ"
+            label="ಪೀಠ (Peeta)"
             englishLabel="Peeta"
             value={formData.peeta}
             onChange={(value) => updateField('peeta', value)}
           />
 
           <FormField
-            label="ಮನೆದೇವರು"
+            label="ಮನೆದೇವರು (Home God)"
             englishLabel="Home God"
             value={formData.homegod}
             onChange={(value) => updateField('homegod', value)}
@@ -331,6 +366,7 @@ export const RegistrationForm = () => {
           
           <FormField
             label="ಎತ್ತರ (Height)"
+            englishLabel="Height"
             type="select"
             options={heightOptions.map(height => ({ value: height, label: height }))}
             value={formData.height}
@@ -359,7 +395,7 @@ export const RegistrationForm = () => {
             englishLabel="Marital Status"
             type="select"
             options={[
-              { value: 'never_married', label: 'ಅವಿವಾಹಿತ (Single/Unmarried)' },
+              { value: 'never_married', label: 'ಅವಿವಾಹಿತ (Never Married)' },
               { value: 'divorced', label: 'ವಿಚ್ಛೇದಿತ (Divorced)' },
               { value: 'widowed', label: 'ವಿಧವೆ/ವಿಧುರ (Widowed)' }
             ]}
@@ -369,7 +405,7 @@ export const RegistrationForm = () => {
           />
 
           <FormField
-            label="ವಾರ್ಷಿಕ ಆದಾಯ"
+            label="ವಾರ್ಷಿಕ ಆದಾಯ (Annual Income)"
             englishLabel="Annual Income"
             value={formData.annualIncome}
             onChange={(value) => updateField('annualIncome', value)}
