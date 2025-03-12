@@ -227,19 +227,6 @@ export const RegistrationForm = () => {
           />
 
           <FormField
-            label="ಲಿಂಗ"
-            englishLabel="Gender"
-            type="select"
-            options={[
-              { value: 'male', label: 'ಪುರುಷ (Male)' },
-              { value: 'female', label: 'ಮಹಿಳೆ (Female)' }
-            ]}
-            value={formData.gender}
-            onChange={(value) => updateField('gender', value)}
-            required
-          />
-
-          <FormField
             label="ಜನ್ಮ ನಾಮ"
             englishLabel="Birth Name"
             value={formData.birthName}
@@ -433,6 +420,18 @@ export const RegistrationForm = () => {
             onChange={(value) => updateField('partnerPreference', value)}
           />
         </div>
+         <FormField
+            label="ಲಿಂಗ"
+            englishLabel="Gender"
+            type="select"
+            options={[
+              { value: 'male', label: 'ಪುರುಷ (Male)' },
+              { value: 'female', label: 'ಮಹಿಳೆ (Female)' }
+            ]}
+            value={formData.gender}
+            onChange={(value) => updateField('gender', value)}
+            required
+          />
 
         {/* Family Details */}
         <div className="space-y-6 mb-8">
