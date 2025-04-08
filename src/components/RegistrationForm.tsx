@@ -139,7 +139,7 @@ export const RegistrationForm = () => {
 
     try {
       const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbwOsNdp_w2JxTKSvCvMRtXg5habw0Y_LmbY_VZvhu5knD5DNIW2L_JgQlXYCkzrj3Yf/exec",
+        "https://script.google.com/macros/s/AKfycbyBe93gCDPcBz21UdzSjy_Q0xrC612-86qWWcllxLMFkA6N1tatMnz3VTVzUrzaFivd/exec",
         {
           method: "POST",
           mode: "no-cors",
