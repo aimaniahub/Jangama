@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FormField } from "./FormField";
 import { Loader2 } from "lucide-react";
-import { SuccessMessage } from "./SuccessMessage";
 import { PreviewModal } from "./PreviewModal";
+import { useNavigate } from 'react-router-dom';
 
 interface TimeState {
   hour: string;
@@ -45,7 +45,6 @@ export const RegistrationForm = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
   const [birthTimeState, setBirthTimeState] = useState<TimeState>({
@@ -53,6 +52,8 @@ export const RegistrationForm = () => {
     minute: "00",
     period: "AM"
   });
+
+  const navigate = useNavigate();
 
   const raashiOptions = [
     { value: 'mesha', label: 'ಮೇಷ (Aries)' },
@@ -138,26 +139,34 @@ export const RegistrationForm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbwOsNdp_w2JxTKSvCvMRtXg5habw0Y_LmbY_VZvhu5knD5DNIW2L_JgQlXYCkzrj3Yf/exec",
+      // Format the data to match the Google Apps Script's expected format
+      const payload = {
+        data: formData
+      };
+      
+      console.log("Submitting form data:", payload);
+      
+      // Use fetch with proper error handling
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbxPI7KdMaI1AsaXdZEHF0PqGyE8x5uBj1awJjigjn_rCBSL7mufrrLBdSASfWV4uey4/exec",
         {
           method: "POST",
-          mode: "no-cors",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            data: {
-              ...formData,
-              timestamp: new Date().toISOString(),
-              sheetName: "Sheet1"
-            }
-          })
+          body: JSON.stringify(payload),
+          // We need to use no-cors mode for Google Apps Script
+          mode: "no-cors"
         }
       );
-
-      setShowSuccess(true);
+      
+      // With no-cors mode, we can't check response.ok or parse the response
+      // We'll assume success if no error is thrown
+      console.log("Form submitted successfully");
+      
+      // Navigate to success page
       setShowPreview(false);
+      navigate('/success');
 
       // Reset form
       setFormData({
@@ -194,6 +203,7 @@ export const RegistrationForm = () => {
       });
     } catch (error) {
       console.error("Submission error:", error);
+      alert("There was an error submitting your form. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -202,10 +212,6 @@ export const RegistrationForm = () => {
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
-  if (showSuccess) {
-    return <SuccessMessage />;
-  }
 
   return (
     <div>
@@ -295,6 +301,7 @@ export const RegistrationForm = () => {
           
           <FormField
             label="ರಾಶಿ (Raashi)"
+            englishLabel="Raashi"
             type="select"
             options={raashiOptions}
             value={formData.raashi}
@@ -538,7 +545,7 @@ export const RegistrationForm = () => {
           formData={formData}
           onConfirm={handleConfirmSubmit}
           onCancel={() => setShowPreview(false)}
-          showSuccessMessage={showSuccess}
+          isSubmitting={isSubmitting}
         />
       )}
     </div>

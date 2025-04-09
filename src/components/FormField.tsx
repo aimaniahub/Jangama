@@ -8,6 +8,7 @@ interface FormFieldProps {
   required?: boolean;
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
 export const FormField = ({
@@ -18,13 +19,14 @@ export const FormField = ({
   required = false,
   value,
   onChange,
+  className = '',
 }: FormFieldProps) => {
   const baseInputStyles = "mt-1 block w-full rounded-md border-2 border-orange-200 shadow-sm " +
     "focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 " +
     "bg-orange-50/30 px-4 py-2 transition-colors duration-200";
 
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <label className="block text-sm font-medium text-gray-700 mb-1">
         {label} <span className="text-gray-500">({englishLabel})</span>
       </label>

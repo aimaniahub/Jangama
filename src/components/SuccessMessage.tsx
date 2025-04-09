@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { Button } from "../components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface SuccessMessageProps {}
 
 export function SuccessMessage({}: SuccessMessageProps) {
   const [language, setLanguage] = useState<'en' | 'kn'>('en');
+  const navigate = useNavigate();
 
   const content = {
     en: {
       welcome: "Welcome to the matrimonial platform specially designed for Jangama and Lingayat community. We are here to help you find your life partner.",
       contact: "Direct Contact: ",
       phone: "7829146919",
+      back: "Back to Registration",
     },
     kn: {
       welcome: "ಜಂಗಮ ಮತ್ತು ಲಿಂಗಾಯತ ಸಮುದಾಯಕ್ಕಾಗಿ ವಿಶೇಷವಾಗಿ ರೂಪಿಸಲಾದ ವೈವಾಹಿಕ ವೇದಿಕೆಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಜೀವನ ಸಂಗಾತಿಯನ್ನು ಹುಡುಕಲು ನಾವು ಇಲ್ಲಿದ್ದೇವೆ.",
       contact: "ನೇರ ಸಂಪರ್ಕ- ",
       phone: "7829146919",
+      back: "ನೋಂದಣಿಗೆ ಹಿಂತಿರುಗಿ",
     }
   };
 
@@ -44,6 +48,14 @@ export function SuccessMessage({}: SuccessMessageProps) {
         <p className="text-lg text-center">
           Thank you for registering with us! We will be in touch soon.
         </p>
+        <div className="flex justify-center mt-6">
+          <Button
+            onClick={() => navigate('/')}
+            className="bg-orange-600 hover:bg-orange-700 text-white"
+          >
+            {content[language].back}
+          </Button>
+        </div>
       </div>
     </div>
   );

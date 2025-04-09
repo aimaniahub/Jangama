@@ -1,65 +1,273 @@
 // Copy this code to Google Apps Script
 function doPost(e) {
-  const spreadsheetId = '1iMtEOvKP8S023hXIdfTGYIneAhl2n1rGNWBaJc7TATc';
-  const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Sheet1'); // Specify sheet name
-  
   try {
-    const data = JSON.parse(e.postData.contents);
-    const formData = data.data;
+    // Parse the incoming data
+    var data = JSON.parse(e.postData.contents);
+    var formData = data.data || data;
     
-    // Format the data into an array matching your columns
-    const rowData = [
-      new Date(), // Timestamp
-      formData.name,
-      formData.birthName,
-      formData.birthDate,
-      formData.birthTime,
-      formData.place,
-      formData.raashi,
-      formData.nakshatra,
-      formData.caste,
-      formData.subcaste,
-      formData.peeta,
-      formData.homegod,
-      formData.height,
-      formData.education,
-      formData.occupation,
-      formData.maritalStatus,
-      formData.annualIncome,
-      formData.otherDetails,
-      formData.partnerPreference,
-      formData.gender,
-      formData.father,
-      formData.fathersOccupation,
-      formData.mother,
-      formData.mothersOccupation,
-      formData.sisters,
-      formData.brothers,
-      formData.contact,
-      formData.email,
-      formData.address,
-      formData.image1,
-      formData.image2
-    ];
+    // First save the data to Google Sheets
+    saveToSheet(formData);
     
-    // Append the data to the sheet
-    sheet.appendRow(rowData);
+    // Then process the form for PDF generation
+    var result = processForm({ postData: e.postData });
     
-    return ContentService.createTextOutput(JSON.stringify({
+    // Return success response with CORS headers
+    return setCorsHeaders(ContentService.createTextOutput(JSON.stringify({
       'result': 'success',
-      'message': 'Data saved successfully'
-    })).setMimeType(ContentService.MimeType.JSON);
+      'message': 'Form data processed successfully'
+    })).setMimeType(ContentService.MimeType.JSON));
     
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({
+    Logger.log('Error in doPost: ' + error.message);
+    
+    // Return error response with CORS headers
+    return setCorsHeaders(ContentService.createTextOutput(JSON.stringify({
       'result': 'error',
       'message': error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
+    })).setMimeType(ContentService.MimeType.JSON));
   }
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput("Service is running");
+  return setCorsHeaders(ContentService.createTextOutput(JSON.stringify({
+    'status': 'ok',
+    'message': 'Service is running'
+  })).setMimeType(ContentService.MimeType.JSON));
+}
+
+// Handle OPTIONS request for CORS preflight
+function doOptions(e) {
+  return setCorsHeaders(ContentService.createTextOutput('')
+    .setMimeType(ContentService.MimeType.JSON));
+}
+
+function processForm(e) {
+  var maleTemplateId = '1TJbNbmyync9qVZ3TRiDcnqQcIgR9UxkYKltCIPUcCes';
+  var femaleTemplateId = '1ksPaA5EnybkxPdj5jO1xlQMZdzdu8In7Io58jUJbpdg';
+  var yourEmailAddress = 'aimania.hub@gmail.com';
+
+  // Extract form data from the JSON payload
+  var data = JSON.parse(e.postData.contents);
+  var formData = data.data || data;
+  
+  // Map the form data to the expected format
+  var processedData = {
+    Name: formData.name || '',
+    Gender: formData.gender || '',
+    BirthName: formData.birthName || '',
+    BirthDate: formData.birthDate || '',
+    BirthTime: formData.birthTime || '',
+    Place: formData.place || '',
+    Raashi: formData.raashi || '',
+    Nakshatra: formData.nakshatra || '',
+    Caste: formData.caste || '',
+    Subcaste: formData.subcaste || '',
+    Peeta: formData.peeta || '',
+    Homegod: formData.homegod || '',
+    Height: formData.height || '',
+    Education: formData.education || '',
+    Occupation: formData.occupation || '',
+    MaritalStatus: formData.maritalStatus || '',
+    AnnualIncome: formData.annualIncome || '',
+    OtherDetails: formData.otherDetails || '',
+    PartnerPreference: formData.partnerPreference || '',
+    Father: formData.father || '',
+    FathersOccupation: formData.fathersOccupation || '',
+    Mother: formData.mother || '',
+    MothersOccupation: formData.mothersOccupation || '',
+    Sisters: formData.sisters || '',
+    Brothers: formData.brothers || '',
+    Contact: formData.contact || '',
+    Email: formData.email || '',
+    Address: formData.address || '',
+    Image1: formData.image1 || '',
+    Image2: formData.image2 || ''
+  };
+
+  try {
+    // Choose the appropriate template based on gender
+    var templateId = processedData['Gender'].toLowerCase() === 'male' ? maleTemplateId : femaleTemplateId;
+
+    // Create a copy of the template and open it in Google Slides
+    var slidesFile = DriveApp.getFileById(templateId);
+    var slidesCopy = slidesFile.makeCopy('Generated Slides for ' + processedData['Name']);
+    var slidesPresentation = SlidesApp.openById(slidesCopy.getId());
+
+    // Replace text placeholders in the slides
+    var slides = slidesPresentation.getSlides();
+    slides.forEach(function(slide) {
+      slide.replaceAllText('<<name>>', processedData['Name']);
+      slide.replaceAllText('<<birthname>>', processedData['BirthName']);
+      slide.replaceAllText('<<birthdate>>', processedData['BirthDate']);
+      slide.replaceAllText('<<birthtime>>', processedData['BirthTime']);
+      slide.replaceAllText('<<place>>', processedData['Place']);
+      slide.replaceAllText('<<raashi>>', processedData['Raashi']);
+      slide.replaceAllText('<<nakshatra>>', processedData['Nakshatra']);
+      slide.replaceAllText('<<caste>>', processedData['Caste']);
+      slide.replaceAllText('<<subcaste>>', processedData['Subcaste']);
+      slide.replaceAllText('<<peeta>>', processedData['Peeta']);
+      slide.replaceAllText('<<homegod>>', processedData['Homegod']);
+      slide.replaceAllText('<<height>>', processedData['Height']);
+      slide.replaceAllText('<<education>>', processedData['Education']);
+      slide.replaceAllText('<<occupation>>', processedData['Occupation']);
+      slide.replaceAllText('<<maritalstatus>>', processedData['MaritalStatus']);
+      slide.replaceAllText('<<annualincome>>', processedData['AnnualIncome']);
+      slide.replaceAllText('<<otherdetails>>', processedData['OtherDetails']);
+      slide.replaceAllText('<<partner>>', processedData['PartnerPreference']);
+      slide.replaceAllText('<<gender>>', processedData['Gender']);
+      slide.replaceAllText('<<father>>', processedData['Father']);
+      slide.replaceAllText('<<occupation1>>', processedData['FathersOccupation']);
+      slide.replaceAllText('<<mother>>', processedData['Mother']);
+      slide.replaceAllText('<<occupation2>>', processedData['MothersOccupation']);
+      slide.replaceAllText('<<sisters>>', processedData['Sisters']);
+      slide.replaceAllText('<<brother>>', processedData['Brothers']);
+      slide.replaceAllText('<<contact>>', processedData['Contact']);
+      slide.replaceAllText('<<email>>', processedData['Email']);
+      slide.replaceAllText('<<address>>', processedData['Address']);
+    });
+
+    // Function to extract Google Drive File ID from the URL
+    function extractDriveId(url) {
+      var id = url.match(/[-\w]{25,}/);
+      return id ? id[0] : null;
+    }
+
+    // Function to replace Image1 placeholder with an image or remove the placeholder if no image is provided
+    function replaceImageInTextbox(slides, image1Url) {
+      var imageBlob1 = image1Url ? DriveApp.getFileById(extractDriveId(image1Url)).getBlob() : null;
+
+      slides.forEach(function(slide) {
+        var shapes = slide.getShapes();
+
+        shapes.forEach(function(shape) {
+          if (shape.getShapeType() == SlidesApp.ShapeType.TEXT_BOX && shape.getText().asString().indexOf('<<image1>>') !== -1) {
+            if (imageBlob1) {
+              var textBoxWidth = shape.getWidth();
+              var textBoxHeight = shape.getHeight();
+              var textBoxLeft = shape.getLeft();
+              var textBoxTop = shape.getTop();
+
+              shape.remove(); // Remove the text box
+
+              // Insert the image in the same position and size as the removed text box
+              slide.insertImage(imageBlob1, textBoxLeft, textBoxTop, textBoxWidth, textBoxHeight);
+              Logger.log('Inserted Image1 at TEXTBOX location');
+            } else {
+              // No image provided, so just remove the placeholder
+              shape.getText().replaceAllText('<<image1>>', '');
+            }
+          }
+        });
+      });
+    }
+
+    // Function to replace the <<image2>> placeholder with an image or remove the placeholder if no image is provided
+    function replaceImage2Textbox(slides, image2Url) {
+      var imageBlob2 = image2Url ? DriveApp.getFileById(extractDriveId(image2Url)).getBlob() : null;
+
+      slides.forEach(function(slide) {
+        var shapes = slide.getShapes();
+
+        shapes.forEach(function(shape) {
+          if (shape.getShapeType() == SlidesApp.ShapeType.TEXT_BOX && shape.getText().asString().indexOf('<<image2>>') !== -1) {
+            if (imageBlob2) {
+              var textBoxWidth = shape.getWidth();
+              var textBoxHeight = shape.getHeight();
+              var textBoxLeft = shape.getLeft();
+              var textBoxTop = shape.getTop();
+
+              shape.remove(); // Remove the text box
+
+              // Insert the image in the same position and size as the removed text box
+              slide.insertImage(imageBlob2, textBoxLeft, textBoxTop, textBoxWidth, textBoxHeight);
+              Logger.log('Inserted Image2 at TEXTBOX location');
+            } else {
+              // No image provided, so just remove the placeholder
+              shape.getText().replaceAllText('<<image2>>', '');
+            }
+          }
+        });
+      });
+    }
+
+    // Call the function to replace Image1 placeholder or remove it if no image is provided
+    replaceImageInTextbox(slides, processedData['Image1']);
+
+    // Call the function to replace Image2 placeholder or remove it if no image is provided
+    replaceImage2Textbox(slides, processedData['Image2']);
+
+    // Save the presentation
+    slidesPresentation.saveAndClose();
+
+    // Add a small delay before generating the PDF
+    Utilities.sleep(2000);
+
+    // Convert to PDF and email it
+    var pdfBlob = DriveApp.getFileById(slidesCopy.getId()).getAs(MimeType.PDF);
+    MailApp.sendEmail({
+      to: yourEmailAddress,
+      subject: 'Generated PDF for ' + processedData['Name'],
+      body: 'Please find the attached PDF for ' + processedData['Name'] + '.',
+      attachments: [pdfBlob]
+    });
+
+    // Optionally, delete the temporary Slides copy
+    DriveApp.getFileById(slidesCopy.getId()).setTrashed(true);
+
+    return {
+      'result': 'success',
+      'message': 'PDF generated and emailed successfully'
+    };
+
+  } catch (error) {
+    Logger.log('Error: ' + error.message);
+    throw error;
+  }
+}
+
+// Function to save data to Google Sheets
+function saveToSheet(formData) {
+  // Replace this with your Google Sheet ID
+  const spreadsheetId = '1iMtEOvKP8S023hXIdfTGYIneAhl2n1rGNWBaJc7TATc';
+  const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Sheet1');
+  
+  // Format the data into an array matching your columns
+  const rowData = [
+    new Date(), // Timestamp
+    formData.name || '',
+    formData.birthName || '',
+    formData.birthDate || '',
+    formData.birthTime || '',
+    formData.place || '',
+    formData.raashi || '',
+    formData.nakshatra || '',
+    formData.caste || '',
+    formData.subcaste || '',
+    formData.peeta || '',
+    formData.homegod || '',
+    formData.height || '',
+    formData.education || '',
+    formData.occupation || '',
+    formData.maritalStatus || '',
+    formData.annualIncome || '',
+    formData.otherDetails || '',
+    formData.partnerPreference || '',
+    formData.gender || '',
+    formData.father || '',
+    formData.fathersOccupation || '',
+    formData.mother || '',
+    formData.mothersOccupation || '',
+    formData.sisters || '',
+    formData.brothers || '',
+    formData.contact || '',
+    formData.email || '',
+    formData.address || '',
+    formData.image1 || '',
+    formData.image2 || ''
+  ];
+  
+  // Append the data to the sheet
+  sheet.appendRow(rowData);
 }
 
 // Add this function to set up CORS

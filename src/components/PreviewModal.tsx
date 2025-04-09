@@ -1,25 +1,20 @@
 import { Button } from "./ui/button";
+import { Loader2 } from "lucide-react";
 
 interface PreviewModalProps {
   formData: any;
   onConfirm: () => void;
   onCancel: () => void;
-  showSuccessMessage: boolean;
+  isSubmitting?: boolean;
 }
 
-export function PreviewModal({ formData, onConfirm, onCancel, showSuccessMessage }: PreviewModalProps) {
+export function PreviewModal({ formData, onConfirm, onCancel, isSubmitting = false }: PreviewModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold text-orange-800 mb-6">ದಯವಿಟ್ಟು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ (Please verify your details)</h2>
         
         <div className="space-y-4">
-          {showSuccessMessage && (
-            <div className="text-lg text-green-600 mb-4">
-              ಜಂಗಮ ಮತ್ತು ಲಿಂಗಾಯತ ಸಮುದಾಯಕ್ಕಾಗಿ ವಿಶೇಷವಾಗಿ ರೂಪಿಸಲಾದ ವೈವಾಹಿಕ ವೇದಿಕೆಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಜೀವನ ಸಂಗಾತಿಯನ್ನು ಹುಡುಕಲು ನಾವು ಇಲ್ಲಿದ್ದೇವೆ.
-            </div>
-          )}
-
           <PreviewSection title="ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ (Personal Information)">
             <PreviewField label="ಹೆಸರು (Name)" value={formData.name} />
             <PreviewField label="ಲಿಂಗ (Gender)" value={formData.gender} />
@@ -68,11 +63,18 @@ export function PreviewModal({ formData, onConfirm, onCancel, showSuccessMessage
         </div>
 
         <div className="flex justify-end gap-4 mt-6">
-          <Button variant="outline" onClick={onCancel} className="bg-yellow-500 text-white">
+          <Button variant="outline" onClick={onCancel} className="bg-yellow-500 text-white" disabled={isSubmitting}>
             ಮರಳಿ ಸರಿಪಡಿಸಿ (Edit)
           </Button>
-          <Button onClick={onConfirm} className="bg-blue-500 text-white">
-            ದೃಢೀಕರಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ (Confirm & Submit)
+          <Button onClick={onConfirm} className="bg-blue-500 text-white" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ... (Submitting...)
+              </>
+            ) : (
+              "ದೃಢೀಕರಿಸಿ ಮತ್ತು ಸಲ್ಲಿಸಿ (Confirm & Submit)"
+            )}
           </Button>
         </div>
       </div>
@@ -91,7 +93,7 @@ function PreviewSection({ title, children }: { title: string; children: React.Re
   );
 }
 
-function PreviewField({ label, value }: { label: string; value: string }) {
+function PreviewField({ label, value }: { label: string; value: string | React.ReactNode }) {
   return (
     <div>
       <span className="text-gray-600 font-medium">{label}:</span>
