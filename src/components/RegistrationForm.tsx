@@ -125,7 +125,7 @@ export const RegistrationForm = () => {
   const handleTimeChange = (type: keyof TimeState, value: string) => {
     const newTimeState = { ...birthTimeState, [type]: value };
     setBirthTimeState(newTimeState);
-    
+
     const timeString = `${newTimeState.hour}:${newTimeState.minute} ${newTimeState.period}`;
     updateField('birthTime', timeString);
   };
@@ -143,9 +143,9 @@ export const RegistrationForm = () => {
       const payload = {
         data: formData
       };
-      
+
       console.log("Submitting form data:", payload);
-      
+
       // Use fetch with proper error handling
       await fetch(
         "https://script.google.com/macros/s/AKfycbxPI7KdMaI1AsaXdZEHF0PqGyE8x5uBj1awJjigjn_rCBSL7mufrrLBdSASfWV4uey4/exec",
@@ -159,11 +159,11 @@ export const RegistrationForm = () => {
           mode: "no-cors"
         }
       );
-      
+
       // With no-cors mode, we can't check response.ok or parse the response
       // We'll assume success if no error is thrown
       console.log("Form submitted successfully");
-      
+
       // Navigate to success page
       setShowPreview(false);
       navigate('/success');
@@ -223,13 +223,12 @@ export const RegistrationForm = () => {
         {/* Personal Information */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ (Personal Information)</h2>
-          
+
           <FormField
             label="ಹೆಸರು"
             englishLabel="Name"
             value={formData.name}
             onChange={(value) => updateField('name', value)}
-            required
           />
 
           <FormField
@@ -245,7 +244,6 @@ export const RegistrationForm = () => {
             type="date"
             value={formData.birthDate}
             onChange={(value) => updateField('birthDate', value)}
-            required
           />
 
           <div className="space-y-4">
@@ -291,14 +289,13 @@ export const RegistrationForm = () => {
             englishLabel="Birth Place"
             value={formData.place}
             onChange={(value) => updateField('place', value)}
-            required
           />
         </div>
 
         {/* Horoscope Details */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ಜಾತಕ ವಿವರಗಳು (Horoscope Details)</h2>
-          
+
           <FormField
             label="ರಾಶಿ (Raashi)"
             englishLabel="Raashi"
@@ -306,7 +303,6 @@ export const RegistrationForm = () => {
             options={raashiOptions}
             value={formData.raashi}
             onChange={(value) => updateField('raashi', value)}
-            required
           />
 
           <FormField
@@ -316,14 +312,13 @@ export const RegistrationForm = () => {
             options={nakshatraOptions}
             value={formData.nakshatra}
             onChange={(value) => updateField('nakshatra', value)}
-            required
           />
         </div>
 
         {/* Community Details */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ಸಮುದಾಯದ ವಿವರಗಳು (Community Details)</h2>
-          
+
           <FormField
             label="ಜಾತಿ"
             englishLabel="Caste"
@@ -357,7 +352,7 @@ export const RegistrationForm = () => {
         {/* Personal Details */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ವೈಯಕ್ತಿಕ ವಿವರಗಳು (Personal Details)</h2>
-          
+
           <FormField
             label="ಎತ್ತರ (Height)"
             englishLabel="Height"
@@ -365,7 +360,6 @@ export const RegistrationForm = () => {
             options={heightOptions.map(height => ({ value: height, label: height }))}
             value={formData.height}
             onChange={(value) => updateField('height', value)}
-            required
           />
 
           <FormField
@@ -381,7 +375,6 @@ export const RegistrationForm = () => {
             englishLabel="Occupation"
             value={formData.occupation}
             onChange={(value) => updateField('occupation', value)}
-            required
           />
 
           <FormField
@@ -395,7 +388,6 @@ export const RegistrationForm = () => {
             ]}
             value={formData.maritalStatus}
             onChange={(value) => updateField('maritalStatus', value)}
-            required
           />
 
           <FormField
@@ -403,14 +395,13 @@ export const RegistrationForm = () => {
             englishLabel="Annual Income"
             value={formData.annualIncome}
             onChange={(value) => updateField('annualIncome', value)}
-            required
           />
         </div>
 
         {/* Additional Information */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ಹೆಚ್ಚುವರಿ ಮಾಹಿತಿ (Additional Information)</h2>
-          
+
           <FormField
             label="ಇತರ ವಿವರಗಳು"
             englishLabel="Other Details"
@@ -437,19 +428,17 @@ export const RegistrationForm = () => {
             ]}
             value={formData.gender}
             onChange={(value) => updateField('gender', value)}
-            required
           />
 
         {/* Family Details */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ಕುಟುಂಬದ ವಿವರಗಳು (Family Details)</h2>
-          
+
           <FormField
             label="ತಂದೆಯ ಹೆಸರು"
             englishLabel="Father's Name"
             value={formData.father}
             onChange={(value) => updateField('father', value)}
-            required
           />
 
           <FormField
@@ -464,7 +453,6 @@ export const RegistrationForm = () => {
             englishLabel="Mother's Name"
             value={formData.mother}
             onChange={(value) => updateField('mother', value)}
-            required
           />
 
           <FormField
@@ -492,7 +480,7 @@ export const RegistrationForm = () => {
         {/* Contact Information */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ಸಂಪರ್ಕ ಮಾಹಿತಿ (Contact Information)</h2>
-          
+
           <FormField
             label="ಮೊಬೈಲ್ ಸಂಖ್ಯೆ"
             englishLabel="Contact Number"
@@ -508,7 +496,6 @@ export const RegistrationForm = () => {
             type="email"
             value={formData.email}
             onChange={(value) => updateField('email', value)}
-            required
           />
 
           <FormField
@@ -517,7 +504,6 @@ export const RegistrationForm = () => {
             type="textarea"
             value={formData.address}
             onChange={(value) => updateField('address', value)}
-            required
           />
         </div>
 
