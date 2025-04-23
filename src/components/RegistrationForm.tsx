@@ -428,7 +428,29 @@ export const RegistrationForm = () => {
             ]}
             value={formData.gender}
             onChange={(value) => updateField('gender', value)}
-          />
+            required // Add this if supported by the FormField component
+            error={formErrors.gender} 
+          />                                              
+                               
+          const validateForm = () => {
+            const errors: any = {};
+            if (!formData.gender) {
+              errors.gender = 'Gender is required';
+            }
+            setFormErrors(errors);
+            return Object.keys(errors).length === 0;
+          };
+          
+          
+          const handleSubmit = (e: React.FormEvent) => {
+            e.preventDefault();
+            if (validateForm()) {
+              // Submit the form
+              console.log('Form submitted:', formData);
+            }
+          };
+
+        
 
         {/* Family Details */}
         <div className="space-y-6 mb-8">
