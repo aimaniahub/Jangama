@@ -428,6 +428,7 @@ export const RegistrationForm = () => {
             ]}
             value={formData.gender}
             onChange={(value) => updateField('gender', value)}
+            required
           />
 
         {/* Family Details */}
