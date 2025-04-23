@@ -148,7 +148,7 @@ export const RegistrationForm = () => {
 
       // Use fetch with proper error handling
       await fetch(
-        "https://script.google.com/macros/s/AKfycbxCKoDMXzgL5HtgCLdhtjsdIu6silP9mlylBSUWK_lv7wbrdDDKYTCWQ-QKYU4fflbXZQ/exec",
+        "https://script.google.com/macros/s/AKfycbw93DutXu6z_tIfLEIgVqDRia-Jjeiln0kGqw2xzfMuZfYvjYvvPv052Ncyq8XSDJwXEg/exec",
         {
           method: "POST",
           headers: {
