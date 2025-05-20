@@ -408,6 +408,7 @@ export const RegistrationForm = () => {
             type="textarea"
             value={formData.otherDetails}
             onChange={(value) => updateField('otherDetails', value)}
+            maxLength={37}
           />
 
           <FormField
@@ -416,6 +417,7 @@ export const RegistrationForm = () => {
             type="textarea"
             value={formData.partnerPreference}
             onChange={(value) => updateField('partnerPreference', value)}
+            maxLength={37}
           />
         </div>
          <FormField
