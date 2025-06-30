@@ -382,9 +382,9 @@ export const RegistrationForm = () => {
             englishLabel="Marital Status"
             type="select"
             options={[
-              { value: 'never_married', label: 'ಅವಿವಾಹಿತ (Never Married)' },
-              { value: 'divorced', label: 'ವಿಚ್ಛೇದಿತ (Divorced)' },
-              { value: 'widowed', label: 'ವಿಧವೆ/ವಿಧುರ (Widowed)' }
+              { value: 'Unmarried', label: 'ಅವಿವಾಹಿತ (Unmarried)' },
+              { value: 'Divorced', label: 'ವಿಚ್ಛೇದಿತ (Divorced)' },
+              { value: 'Widowed', label: 'ವಿಧವೆ/ವಿಧುರ (Widowed)' }
             ]}
             value={formData.maritalStatus}
             onChange={(value) => updateField('maritalStatus', value)}
