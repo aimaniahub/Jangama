@@ -9,6 +9,9 @@ interface FormFieldProps {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  disabled?: boolean;
+  maxLength?: number;
+  placeholder?: string;
 }
 
 export const FormField = ({
@@ -20,10 +23,15 @@ export const FormField = ({
   value,
   onChange,
   className = '',
+  disabled = false,
+  maxLength,
+  placeholder,
 }: FormFieldProps) => {
   const baseInputStyles = "mt-1 block w-full rounded-md border-2 border-orange-200 shadow-sm " +
     "focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 " +
     "bg-orange-50/30 px-4 py-2 transition-colors duration-200";
+
+  const disabledStyles = disabled ? "bg-gray-100 text-gray-600 cursor-not-allowed" : "";
 
   return (
     <div className={`relative ${className}`}>
@@ -34,8 +42,9 @@ export const FormField = ({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={baseInputStyles}
+          className={`${baseInputStyles} ${disabledStyles}`}
           required={required}
+          disabled={disabled}
         >
           <option value="">ಆಯ್ಕೆ ಮಾಡಿ (Select)</option>
           {options.map((option) => (
@@ -48,8 +57,11 @@ export const FormField = ({
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={`${baseInputStyles} min-h-[100px]`}
+          className={`${baseInputStyles} min-h-[100px] ${disabledStyles}`}
           required={required}
+          disabled={disabled}
+          maxLength={maxLength}
+          placeholder={placeholder}
         />
       ) : type === 'file' ? (
         <input
@@ -64,14 +76,18 @@ export const FormField = ({
           hover:file:bg-orange-200
           transition-all duration-200"
           required={required}
+          disabled={disabled}
         />
       ) : (
         <input
           type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className={baseInputStyles}
+          className={`${baseInputStyles} ${disabledStyles}`}
           required={required}
+          disabled={disabled}
+          maxLength={maxLength}
+          placeholder={placeholder}
         />
       )}
     </div>

@@ -82,6 +82,7 @@ function processForm(e) {
     Address: formData.address || '',
     Image1: formData.image1 || '',
     Image2: formData.image2 || ''
+    District: formData.district || '',
   };
 
   try {

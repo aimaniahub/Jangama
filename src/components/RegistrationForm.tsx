@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormField } from "./FormField";
 import { Loader2 } from "lucide-react";
 import { PreviewModal } from "./PreviewModal";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useBeforeUnload } from 'react-router-dom';
 
 interface TimeState {
   hour: string;
@@ -19,10 +19,11 @@ export const RegistrationForm = () => {
     place: "",
     raashi: "",
     nakshatra: "",
-    caste: "",
+    caste: "Veerashaiva Lingayata",
     subcaste: "",
     peeta: "",
     homegod: "",
+    district: "",
     height: "",
     education: "",
     occupation: "",
@@ -54,6 +55,43 @@ export const RegistrationForm = () => {
   });
 
   const navigate = useNavigate();
+
+  // Check if form has any data entered
+  const hasFormData = () => {
+    return Object.entries(formData).some(([key, value]) => {
+      // Skip checking caste since it has a default value
+      if (key === 'caste') return false;
+      return value && value.trim() !== '';
+    });
+  };
+
+  // Handle beforeunload event to warn user about unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasFormData()) {
+        e.preventDefault();
+        // Modern browsers will show their own message, but we still need to prevent default
+        return 'You have unsaved changes. Are you sure you want to leave?';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [formData]);
+
+
+
+  // Use React Router's useBeforeUnload to handle page refresh/close
+  useBeforeUnload(
+    React.useCallback(() => {
+      if (hasFormData()) {
+        return "You have unsaved changes. Are you sure you want to leave?";
+      }
+    }, [formData])
+  );
 
   const raashiOptions = [
     { value: 'mesha', label: 'ಮೇಷ (Aries)' },
@@ -101,11 +139,62 @@ export const RegistrationForm = () => {
   ];
 
   const heightOptions = [
-    "3ft", "3.1ft", "3.2ft", "3.3ft", "3.4ft", "3.5ft", "3.6ft", "3.7ft", "3.8ft", "3.9ft",
-    "4ft", "4.1ft", "4.2ft", "4.3ft", "4.4ft", "4.5ft", "4.6ft", "4.7ft", "4.8ft", "4.9ft",
-    "5ft", "5.1ft", "5.2ft", "5.3ft", "5.4ft", "5.5ft", "5.6ft", "5.7ft", "5.8ft", "5.9ft",
-    "6ft", "6.1ft", "6.2ft", "6.3ft", "6.4ft", "6.5ft", "6.6ft", "6.7ft", "6.8ft", "6.9ft",
+    "3ft", "3.1ft", "3.2ft", "3.3ft", "3.4ft", "3.5ft", "3.6ft", "3.7ft", "3.8ft", "3.9ft","3.10ft", "3.11ft", 
+    "4ft", "4.1ft", "4.2ft", "4.3ft", "4.4ft", "4.5ft", "4.6ft", "4.7ft", "4.8ft", "4.9ft", "4.10ft", "4.11ft",
+    "5ft", "5.1ft", "5.2ft", "5.3ft", "5.4ft", "5.5ft", "5.6ft", "5.7ft", "5.8ft", "5.9ft", "5.10ft", "5.11ft",
+    "6ft", "6.1ft", "6.2ft", "6.3ft", "6.4ft", "6.5ft", "6.6ft", "6.7ft", "6.8ft", "6.9ft", "6.10ft", "6.11ft",
     "7ft"
+  ];
+
+  const subcasteOptions = [
+    { value: 'jangama', label: 'ಜಂಗಮ (Jangama)' },
+    { value: 'banajiga', label: 'ಬಣಜಿಗ (Banajiga)' },
+    { value: 'panchamasali', label: 'ಪಂಚಮಸಾಲಿ (Panchamasali)' },
+    { value: 'ganiga', label: 'ಗಾಣಿಗ (Ganiga)' },
+    { value: 'kumbar', label: 'ಕುಂಬಾರ (Kumbar/Kumbara)' },
+    { value: 'madivala', label: 'ಮಾದಿವಾಲ (Madivala)' },
+    { value: 'sadar', label: 'ಸದರ್ (Sadar)' },
+    { value: 'gowda', label: 'ಗೌಡ (Gowda)' },
+    { value: 'aradhya', label: 'ಆರಾಧ್ಯ (Aradhya)' },
+    { value: 'devanga', label: 'ದೇವಾಂಗ (Devanga)' },
+    { value: 'nonamba', label: 'ನೊನಂಬ (Nonamba/Nolamba)' },
+    { value: 'shivashimpi', label: 'ಶಿವಶಿಂಪಿ (Shivashimpi/Javali)' },
+    { value: 'veerashaiva', label: 'ವೀರಶೈವ (Veerashaiva)' },
+    { value: 'pakanakl', label: 'ಪಕನಕಲ (Pakanakl)' },
+    { value: 'other', label: 'ಇತರ (Other)' }
+  ];
+
+  const karnatakaDistrictsOptions = [
+    { value: 'bagalkot', label: 'ಬಾಗಲಕೋಟೆ (Bagalkot)' },
+    { value: 'ballari', label: 'ಬಳ್ಳಾರಿ (Ballari)' },
+    { value: 'belagavi', label: 'ಬೆಳಗಾವಿ (Belagavi)' },
+    { value: 'bengaluru_rural', label: 'ಬೆಂಗಳೂರು ಗ್ರಾಮಾಂತರ (Bengaluru Rural)' },
+    { value: 'bengaluru_urban', label: 'ಬೆಂಗಳೂರು ನಗರ (Bengaluru Urban)' },
+    { value: 'bidar', label: 'ಬೀದರ್ (Bidar)' },
+    { value: 'chamarajanagar', label: 'ಚಾಮರಾಜನಗರ (Chamarajanagar)' },
+    { value: 'chikkaballapur', label: 'ಚಿಕ್ಕಬಳ್ಳಾಪುರ (Chikkaballapur)' },
+    { value: 'chikkamagaluru', label: 'ಚಿಕ್ಕಮಗಳೂರು (Chikkamagaluru)' },
+    { value: 'chitradurga', label: 'ಚಿತ್ರದುರ್ಗ (Chitradurga)' },
+    { value: 'dakshina_kannada', label: 'ದಕ್ಷಿಣ ಕನ್ನಡ (Dakshina Kannada)' },
+    { value: 'davanagere', label: 'ದಾವಣಗೆರೆ (Davanagere)' },
+    { value: 'dharwad', label: 'ಧಾರವಾಡ (Dharwad)' },
+    { value: 'gadag', label: 'ಗದಗ (Gadag)' },
+    { value: 'hassan', label: 'ಹಾಸನ (Hassan)' },
+    { value: 'haveri', label: 'ಹಾವೇರಿ (Haveri)' },
+    { value: 'kalaburagi', label: 'ಕಲಬುರಗಿ (Kalaburagi)' },
+    { value: 'kodagu', label: 'ಕೊಡಗು (Kodagu)' },
+    { value: 'kolar', label: 'ಕೋಲಾರ (Kolar)' },
+    { value: 'koppal', label: 'ಕೊಪ್ಪಳ (Koppal)' },
+    { value: 'mandya', label: 'ಮಂಡ್ಯ (Mandya)' },
+    { value: 'mysuru', label: 'ಮೈಸೂರು (Mysuru)' },
+    { value: 'raichur', label: 'ರಾಯಚೂರು (Raichur)' },
+    { value: 'ramanagara', label: 'ರಾಮನಗರ (Ramanagara)' },
+    { value: 'shivamogga', label: 'ಶಿವಮೊಗ್ಗ (Shivamogga)' },
+    { value: 'tumakuru', label: 'ತುಮಕೂರು (Tumakuru)' },
+    { value: 'udupi', label: 'ಉಡುಪಿ (Udupi)' },
+    { value: 'uttara_kannada', label: 'ಉತ್ತರ ಕನ್ನಡ (Uttara Kannada)' },
+    { value: 'vijayapura', label: 'ವಿಜಯಪುರ (Vijayapura)' },
+    { value: 'yadgir', label: 'ಯಾದಗಿರಿ (Yadgir)' }
   ];
 
   const generateHourOptions = () => {
@@ -146,9 +235,16 @@ export const RegistrationForm = () => {
 
       console.log("Submitting form data:", payload);
 
+      // Get the App Script URL from environment variables
+      const appScriptUrl = import.meta.env.VITE_APPSCRIPT_URL;
+
+      if (!appScriptUrl) {
+        throw new Error('App Script URL not configured. Please check your environment variables.');
+      }
+
       // Use fetch with proper error handling
       await fetch(
-        "https://script.google.com/macros/s/AKfycbw93DutXu6z_tIfLEIgVqDRia-Jjeiln0kGqw2xzfMuZfYvjYvvPv052Ncyq8XSDJwXEg/exec",
+        appScriptUrl,
         {
           method: "POST",
           headers: {
@@ -164,6 +260,8 @@ export const RegistrationForm = () => {
       // We'll assume success if no error is thrown
       console.log("Form submitted successfully");
 
+      // Form submitted successfully - no need to track unsaved changes anymore
+
       // Navigate to success page
       setShowPreview(false);
       navigate('/success');
@@ -177,10 +275,11 @@ export const RegistrationForm = () => {
         place: "",
         raashi: "",
         nakshatra: "",
-        caste: "",
+        caste: "Veerashaiva Lingayata",
         subcaste: "",
         peeta: "",
         homegod: "",
+        district: "",
         height: "",
         education: "",
         occupation: "",
@@ -211,6 +310,27 @@ export const RegistrationForm = () => {
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAnnualIncomeChange = (value: string) => {
+    // Allow only numbers
+    const numericValue = value.replace(/[^0-9]/g, '');
+
+    if (numericValue) {
+      // Store the formatted value with "lakhs" for submission
+      const formattedValue = `${numericValue} lakhs`;
+      updateField('annualIncome', formattedValue);
+    } else {
+      updateField('annualIncome', '');
+    }
+  };
+
+  // Helper function to get display value for annual income (without "lakhs")
+  const getAnnualIncomeDisplayValue = () => {
+    if (formData.annualIncome && formData.annualIncome.includes('lakhs')) {
+      return formData.annualIncome.replace(' lakhs', '');
+    }
+    return formData.annualIncome;
   };
 
   return (
@@ -325,11 +445,14 @@ export const RegistrationForm = () => {
             value={formData.caste}
             onChange={(value) => updateField('caste', value)}
             required
+            disabled
           />
 
           <FormField
             label="ಉಪಜಾತಿ (Sub-caste)"
             englishLabel="Sub-caste"
+            type="select"
+            options={subcasteOptions}
             value={formData.subcaste}
             onChange={(value) => updateField('subcaste', value)}
           />
@@ -352,6 +475,16 @@ export const RegistrationForm = () => {
         {/* Personal Details */}
         <div className="space-y-6 mb-8">
           <h2 className="text-2xl font-bold text-orange-800 mb-4">ವೈಯಕ್ತಿಕ ವಿವರಗಳು (Personal Details)</h2>
+
+          <FormField
+            label="ಜಿಲ್ಲೆ (District)"
+            englishLabel="District"
+            type="select"
+            options={karnatakaDistrictsOptions}
+            value={formData.district}
+            onChange={(value) => updateField('district', value)}
+            required
+          />
 
           <FormField
             label="ಎತ್ತರ (Height)"
@@ -390,12 +523,19 @@ export const RegistrationForm = () => {
             onChange={(value) => updateField('maritalStatus', value)}
           />
 
-          <FormField
-            label="ವಾರ್ಷಿಕ ಆದಾಯ (Annual Income)"
-            englishLabel="Annual Income"
-            value={formData.annualIncome}
-            onChange={(value) => updateField('annualIncome', value)}
-          />
+          <div className="relative">
+            <FormField
+              label="ವಾರ್ಷಿಕ ಆದಾಯ (Annual Income)"
+              englishLabel="Annual Income"
+              type="text"
+              value={getAnnualIncomeDisplayValue()}
+              onChange={handleAnnualIncomeChange}
+              placeholder="Enter yearly salary"
+            />
+            <div className="absolute right-3 top-9 text-gray-500 text-sm pointer-events-none">
+              lakhs
+            </div>
+          </div>
         </div>
 
         {/* Additional Information */}

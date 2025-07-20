@@ -21,6 +21,8 @@ export function PreviewModal({ formData, onConfirm, onCancel, isSubmitting = fal
             <PreviewField label="ಜನ್ಮ ದಿನಾಂಕ (Birth Date)" value={formData.birthDate} />
             <PreviewField label="ಜನ್ಮ ಸಮಯ (Birth Time)" value={formData.birthTime} />
             <PreviewField label="ಜನ್ಮ ಸ್ಥಳ (Birth Place)" value={formData.place} />
+            <PreviewField label="ಜಿಲ್ಲೆ (District)" value={formData.district} />
+            <PreviewField label="ಎತ್ತರ (Height)" value={formData.height} />
           </PreviewSection>
 
           <PreviewSection title="ಜಾತಕ ವಿವರಗಳು (Horoscope Details)">
