@@ -15,10 +15,5 @@ export const appConfig = {
 
 // Validation function
 export const validateConfig = () => {
-  if (!appConfig.appScriptUrl) {
-    console.error('Missing VITE_APPSCRIPT_URL environment variable');
-    console.log('Available environment variables:', Object.keys(import.meta.env));
-    return false;
-  }
-  return true;
+  return !!appConfig.appScriptUrl;
 };

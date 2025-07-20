@@ -234,22 +234,12 @@ export const RegistrationForm = () => {
         data: formData
       };
 
-      console.log("Submitting form data:", payload);
-
       // Get the App Script URL from configuration
       const appScriptUrl = appConfig.appScriptUrl;
 
-      // Debug: Log environment variables (remove this after fixing)
-      console.log('Environment variables:', {
-        VITE_APPSCRIPT_URL: import.meta.env.VITE_APPSCRIPT_URL,
-        NODE_ENV: import.meta.env.NODE_ENV,
-        MODE: import.meta.env.MODE,
-        configUrl: appScriptUrl
-      });
-
       // Validate configuration
       if (!validateConfig()) {
-        throw new Error(`App Script URL not configured. Environment: ${import.meta.env.MODE}, Available vars: ${Object.keys(import.meta.env).join(', ')}`);
+        throw new Error('App Script URL not configured. Please check your configuration.');
       }
 
       // Use fetch with proper error handling
@@ -311,7 +301,6 @@ export const RegistrationForm = () => {
         image2: ""
       });
     } catch (error) {
-      console.error("Submission error:", error);
       alert("There was an error submitting your form. Please try again.");
     } finally {
       setIsSubmitting(false);
