@@ -3,6 +3,7 @@ import { FormField } from "./FormField";
 import { Loader2 } from "lucide-react";
 import { PreviewModal } from "./PreviewModal";
 import { useNavigate, useBeforeUnload } from 'react-router-dom';
+import { appConfig, validateConfig } from '../config/app.config';
 
 interface TimeState {
   hour: string;
@@ -235,11 +236,20 @@ export const RegistrationForm = () => {
 
       console.log("Submitting form data:", payload);
 
-      // Get the App Script URL from environment variables
-      const appScriptUrl = import.meta.env.VITE_APPSCRIPT_URL;
+      // Get the App Script URL from configuration
+      const appScriptUrl = appConfig.appScriptUrl;
 
-      if (!appScriptUrl) {
-        throw new Error('App Script URL not configured. Please check your environment variables.');
+      // Debug: Log environment variables (remove this after fixing)
+      console.log('Environment variables:', {
+        VITE_APPSCRIPT_URL: import.meta.env.VITE_APPSCRIPT_URL,
+        NODE_ENV: import.meta.env.NODE_ENV,
+        MODE: import.meta.env.MODE,
+        configUrl: appScriptUrl
+      });
+
+      // Validate configuration
+      if (!validateConfig()) {
+        throw new Error(`App Script URL not configured. Environment: ${import.meta.env.MODE}, Available vars: ${Object.keys(import.meta.env).join(', ')}`);
       }
 
       // Use fetch with proper error handling

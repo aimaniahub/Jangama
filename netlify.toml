@@ -1,0 +1,11 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  VITE_APPSCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkZ41Pzfsa-SmJwljHZ3iKvV6uCB0d-T2VQGrt_UEr0DLvua3WYepyEB5wo21MCWNHTA/exec"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
